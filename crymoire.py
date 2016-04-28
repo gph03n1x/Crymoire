@@ -33,13 +33,9 @@ class Crymoire():
         """
         remaining_key: part of the key that wasn't used for creating
         the character chain
-        skip: integer of the characters we are going to ignore
-        results: a list of the directly encrypted characters
         """
         self.remaining_key = ""
-        self.skip = 0
-        self.results = []
-        
+
         
     def raw_chain(self):
         """
@@ -61,13 +57,15 @@ class Crymoire():
         elif level <= NOISELEVELS.HIGH:
             self.charNoise[position] = NOISELEVELS.HIGH_NOISE
         else:
-            self.charNoise[position] = NOISELEVELS.DEFAULT_NOISE
+            self.charNoise[position] = NOISELEVELS.ULTRA_NOISE
     
     
     def decrypt(self, message):
         """
         decrypts the encrypted message
+        skip: integer of the characters we are going to ignore
         """
+        self.skip = 0
         return "".join(map(self.decryptChar, [i for i in message]))
 
 
@@ -88,8 +86,11 @@ class Crymoire():
     def encrypt(self, message):
         """
         creates the encrypted string of the message
+        length: the true length of the encrypted output
+        results: a list of the directly encrypted characters
         """
         self.length = 0
+        self.results = []
         map(self.encryptChar, [i for i in message])
         return self.noise_insertion()
     
@@ -111,11 +112,18 @@ class Crymoire():
         """
         noise = statisticalentropy.occurance_fixed(self.results, self.length)
         max_value = f_div(1, len(noise.keys()))
-
+        
+        """Inserts noise based on the current character occurance"""
         res = ""
         for i in self.results:
             res += i
             for j in range(self.charNoise[self.originChars[i]]):
+                """
+                Adds a random character in the spaces between the legit character
+                if a characters occurance is bigger than the max value then we are no longer
+                going to add him . If every character's occurance is near the ma value then
+                we are going to choose randomly
+                """
                 if len(noise.keys()) > 0:
                     max_key = random.choice(noise.keys())
                     while noise[max_key] >= max_value:
@@ -137,7 +145,7 @@ class Crymoire():
         Loads the key from the specified file
         """
         fObj = open(filename, "r")
-        self.setKey(f.read())
+        self.setKey(fObj.read())
         fObj.close()
 
     def setKey(self, key):
@@ -148,14 +156,16 @@ class Crymoire():
         self.analyze()
         
     def analyze(self):
-        # Rest Digits in form (firstChar,lastChar,jump)
-        self.swap_chars = round(statisticalentropy.sentence_entropy(self.key))
+        """Analyse the key and create the targetChars, originChars and charNoise"""
         
+        """Calculate the key entropy """
+        self.swap_chars = round(statisticalentropy.sentence_entropy(self.key))
+        """Swap some characters in the charTable"""
         for char in range(0, int(self.swap_chars), 2):
             self.charTable = swap_list_positions(
                 self.charTable, ord(self.key[char]) % 10, ord(self.key[char+1]) % 10
                                                  )
-                                                 
+        """Create the target and origin character dictionaries"""                                         
         for char in range(int(self.swap_chars), len(self.key), 2):
             if char+1 >= len(self.key):
                 break
@@ -176,7 +186,7 @@ class Crymoire():
                     self.originChars[tar] = char
                     break
                 
-        
+        """Calculate the noise for each character"""
         for part in range(0, len(self.remaining_key), 2):
             chances = statisticalentropy.get_chance(self.remaining_key[part]) + statisticalentropy.get_chance(self.remaining_key[part+1])
             if chances > 0.0:

@@ -69,32 +69,46 @@ class StatisticalEntropy(object):
     
 class occuranceGraph(object):
     def __init__(self):
+        """Class for creating character occurances graphs"""
         self.se = StatisticalEntropy()
 
 
     def use_notebook(self):
+        """Output to a jupyter notebook"""
         output_notebook() 
 
 
     def use_file(self, filename="graphs.html"):
+        """Output to a html file"""
         output_file(filename)
 
 
     def create_occurance_figure(self, sentence, open_plots=False):
+        """
+        Gets dictionaries of occurances on a sentence
+        and the normal occurances at the english language
+        """
         self.stm = self.se.statistical_monograms(sentence, sort_r=True)
         self.sa = self.se.occurances
         
+        """
+        Create key item pair lists for each dictionary
+        """
         keys = [m[0] for m in self.stm ]
         items = [m[1] for m in self.stm ]
-        
         keys_a = [m[0] for m in self.sa ]
         items_a = [m[1] for m in self.sa ]
         
+        """
+        Creates a figure of each dictionary
+        """
         p = figure(x_range=keys, title="Encrypted Sentence letter occurance")
         p.square(keys, items)
-        
         s = figure(x_range=keys_a, title="Normal letter occurance")
         s.square(keys_a, items_a)
+        """
+        Creates a plot and opens it in a webbrowser if desired
+        """
         v = hplot(p, s)
         if open_plots:
             show(v)

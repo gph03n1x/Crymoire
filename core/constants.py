@@ -9,13 +9,14 @@ class NOISELEVELS():
     LOW = 3.98
     MEDIUM = 7.43
     HIGH = 10.54
-    # The _NOISE variables dictates how many noise characters
-    # we are going to add after a substitution
+    """
+    The _NOISE variables dictates how many noise characters
+    we are going to add after a substitution
+    """
     LOW_NOISE = 0
     MEDIUM_NOISE = 1
     HIGH_NOISE = 2
-    # In case our levels are higher than high
-    DEFAULT_NOISE = 3
+    ULTRA_NOISE = 3
 
 
 DEFAULT_OCCURANCES = {

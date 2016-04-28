@@ -4,6 +4,7 @@ import random
 import string
 
 def swap_list_positions(_list, position, target):
+    """swaps two objects' position"""
     _list[position], _list[target] = _list[target], _list[position]
     return _list
 
@@ -25,7 +26,11 @@ def charmod100(char):
     return ord(char) % 100
 
 def f_div(arith, paran):
-    """
-    returns a float division
-    """
+    """returns a float division"""
     return arith/paran
+
+def create_key_file(key=generate_random_key(), filename="private.key"):
+    """saves or generates a key in a file"""
+    fObj = open(filename, "w")
+    fObj.write(key)
+    fObj.close()
