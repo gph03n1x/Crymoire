@@ -8,6 +8,10 @@ __pycache__/
 # C extensions
 *.so
 
+# Makefiles
+Makefile
+make.bat
+
 # Html Graphs
 *.html
 
@@ -25,6 +29,7 @@ lib64/
 parts/
 sdist/
 var/
+source/
 *.egg-info/
 .installed.cfg
 *.egg
