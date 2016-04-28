@@ -12,28 +12,48 @@ from core.utils import *
     
 statisticalentropy = StatisticalEntropy()
 
+
 class Crymoire():
-    
     def __init__(self, targets=string.printable):
-        
+        """
+        Creates all the attributes
+        charTable: a sorted list with every character
+        """
         self.charTable = [ i for i in targets ]
         self.charTable.sort()
-        
+        """
+        Dictionaries
+        charNoise: noise level of every character
+        targetChars: target char of each char
+        originChars: origin char of each char
+        """
         self.charNoise = dict.fromkeys((c for c in self.charTable), 0)
         self.targetChars = dict.fromkeys((c for c in self.charTable), None)
         self.originChars = dict.fromkeys((c for c in self.charTable), None)
-        
+        """
+        remaining_key: part of the key that wasn't used for creating
+        the character chain
+        skip: integer of the characters we are going to ignore
+        results: a list of the directly encrypted characters
+        """
         self.remaining_key = ""
-        
         self.skip = 0
         self.results = []
         
         
-        
     def raw_chain(self):
+        """
+        returns the dictionaries of the of the targetChars and
+        the noise of each char
+        """
         return str(self.targetChars) + "\n" + str(self.charNoise)
     
+    
     def dictate_noise(self, level, position):
+        """
+        Choose how many characters are going to get
+        inserted after a certain character
+        """
         if level <= NOISELEVELS.LOW:
             self.charNoise[position] = NOISELEVELS.LOW_NOISE
         elif level <= NOISELEVELS.MEDIUM:
@@ -42,23 +62,53 @@ class Crymoire():
             self.charNoise[position] = NOISELEVELS.HIGH_NOISE
         else:
             self.charNoise[position] = NOISELEVELS.DEFAULT_NOISE
-        
+    
+    
+    def decrypt(self, message):
+        """
+        decrypts the encrypted message
+        """
+        return "".join(map(self.decryptChar, [i for i in message]))
+
+
+    def decryptChar(self, char):
+        """
+        Decrypts each character . If skip is positive
+        then ignores the character.
+        """
+        if self.skip > 0:
+            self.skip -= 1
+            return ""
+        else:
+            result = self.originChars[char]
+            self.skip = self.charNoise[result]
+            return result
+
+
     def encrypt(self, message):
+        """
+        creates the encrypted string of the message
+        """
         self.length = 0
         map(self.encryptChar, [i for i in message])
         return self.noise_insertion()
-        
     
-    def decrypt(self, message):
-        return "".join(map(self.decryptChar, [i for i in message]))
-
+    
     def encryptChar(self, char):
-        result = self.targetChars[char]
-        
-        self.results.append(result)
+        """
+        Adds to the results list the directly encrypted character
+        and increases the length by 1 and the noise that the char
+        generates .
+        """
+        self.results.append(self.targetChars[char])
         self.length += 1+self.charNoise[char]
     
     def noise_insertion(self):
+        """
+        Adds the noise characters after each character in a way
+        that every character will have a nearly equal chance of
+        appearing in the final encrypted string
+        """
         noise = statisticalentropy.occurance_fixed(self.results, self.length)
         max_value = f_div(1, len(noise.keys()))
 
@@ -82,16 +132,18 @@ class Crymoire():
                     res += random.choice(self.results)
         return res
 
-    def decryptChar(self, char):
-        if self.skip > 0:
-            self.skip -= 1
-            return ""
-        else:
-            result = self.originChars[char]
-            self.skip = self.charNoise[result]
-            return result
+    def loadKey(self, filename="private.key"):
+        """
+        Loads the key from the specified file
+        """
+        fObj = open(filename, "r")
+        self.setKey(f.read())
+        fObj.close()
 
     def setKey(self, key):
+        """
+        Sets the key and analyzes it
+        """
         self.key = key
         self.analyze()
         

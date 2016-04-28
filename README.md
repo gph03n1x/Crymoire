@@ -16,7 +16,16 @@ This is merely a toy ! Do not use in commercial products .
 
 ### Examples
 
+```python
+from crymoire import Crymoire
+from core.utils import generate_random_key
 
+crymoire = Crymoire()
+crymoire.setKey(generate_random_key())
+message = "my message"
+enc_ = crymoire.encrypt(message)
+dec_ = crymoire.decrypt(enc_)
+```
 
 ### Broke it ?
 
