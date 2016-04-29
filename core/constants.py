@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-    
+# -*- coding: utf-8 -*-
+
+
 class NOISELEVELS():
     """
     These levels dictate the noise level which is the upper border

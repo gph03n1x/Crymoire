@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import sys
 import math
 import string
 import operator
@@ -6,9 +8,13 @@ import core.constants as CONST
 from core.utils import f_div
 
 try:
-    from bokeh.plotting import figure, output_file, show, hplot, output_notebook
+    if len(sys.argv) > 1:
+        if sys.argv[1] != "--no-bokeh":
+            from bokeh.plotting import figure, output_file, show, hplot, output_notebook
+        else:
+            print "[-] Bokeh disabled. Plotting is not available"
 except ImportError:
-    print "[-] You are missing the bokeh package . Plotting is not available"
+    print "[-] You are missing the bokeh package. Plotting is not available"
 
 
 class StatisticalEntropy(object):
@@ -19,7 +25,7 @@ class StatisticalEntropy(object):
         self._occurances = CONST.DEFAULT_OCCURANCES
         self.occurances = sorted(self._occurances.items(),
                        key=operator.itemgetter(1), reverse=True)
-        
+
     def get_chance(self, char):
         """
         Get the chance of a character occuring in a normal sentence
@@ -61,12 +67,12 @@ class StatisticalEntropy(object):
         stats = {i:0.0 for i in sentence}
         for letter in sentence:
             stats[letter] += f_div(1,len(sentence)) * 100
-    
+
         if not sort_r:
             return stats
         return sorted(stats.items(), key=operator.itemgetter(1), reverse=True)
 
-    
+
 class occuranceGraph(object):
     def __init__(self):
         """Class for creating character occurances graphs"""
@@ -75,7 +81,7 @@ class occuranceGraph(object):
 
     def use_notebook(self):
         """Output to a jupyter notebook"""
-        output_notebook() 
+        output_notebook()
 
 
     def use_file(self, filename="graphs.html"):
@@ -90,7 +96,7 @@ class occuranceGraph(object):
         """
         self.stm = self.se.statistical_monograms(sentence, sort_r=True)
         self.sa = self.se.occurances
-        
+
         """
         Create key item pair lists for each dictionary
         """
@@ -98,7 +104,7 @@ class occuranceGraph(object):
         items = [m[1] for m in self.stm ]
         keys_a = [m[0] for m in self.sa ]
         items_a = [m[1] for m in self.sa ]
-        
+
         """
         Creates a figure of each dictionary
         """
@@ -112,9 +118,8 @@ class occuranceGraph(object):
         v = hplot(p, s)
         if open_plots:
             show(v)
-    
+
 
 if __name__ == '__main__':
     se = occuranceGraph()
     se.create_occurance_figure("w-ln0Fk0=lyn{;{~~0lkN0A", open_plots=True)
-    
