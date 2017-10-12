@@ -5,16 +5,16 @@ import math
 import string
 import operator
 import core.constants as CONST
-from core.utils import f_div
+
 
 try:
     if len(sys.argv) > 1:
         if sys.argv[1] != "--no-bokeh":
             from bokeh.plotting import figure, output_file, show, hplot, output_notebook
         else:
-            print "[-] Bokeh disabled. Plotting is not available"
+            print("[-] Bokeh disabled. Plotting is not available")
 except ImportError:
-    print "[-] You are missing the bokeh package. Plotting is not available"
+    print("[-] You are missing the bokeh package. Plotting is not available")
 
 
 class StatisticalEntropy(object):
@@ -43,7 +43,7 @@ class StatisticalEntropy(object):
         sm = self.statistical_monograms(sentence)
         entropy = 0
         for i in sm:
-            entropy -= f_div(sm[i],100) * math.log(f_div(sm[i],100), 2)
+            entropy -= sm[i]/100 * math.log(sm[i]/100, 2)
         return entropy
 
 
@@ -54,7 +54,7 @@ class StatisticalEntropy(object):
         """
         stats = {i:0.0 for i in sentence}
         for letter in sentence:
-            stats[letter] += f_div(1,length)
+            stats[letter] += 1/length
         return stats
 
 
@@ -66,7 +66,7 @@ class StatisticalEntropy(object):
         """
         stats = {i:0.0 for i in sentence}
         for letter in sentence:
-            stats[letter] += f_div(1,len(sentence)) * 100
+            stats[letter] += 1/len(sentence) * 100
 
         if not sort_r:
             return stats

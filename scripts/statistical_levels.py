@@ -15,8 +15,7 @@ def get_levels():
 
     sums.sort()
     for i in range(4):
-        print "Position: ", (i+1)*len(sums)/4-1," level:\
-", sums[(i+1)*len(sums)/4-1]
+        print("Position: ", (i+1)*len(sums)/4-1," level: ", sums[(i+1)*len(sums)/4-1])
 
 
 if __name__ == "__main__":

@@ -5,6 +5,9 @@ __pycache__/
 # Key files
 *.key
 
+# .idea
+.idea/
+
 # C extensions
 *.so
 

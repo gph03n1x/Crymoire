@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import division
 import random
 import string
 
@@ -26,9 +25,7 @@ def charmod100(char):
     """returns ord of char mod 100"""
     return ord(char) % 100
 
-def f_div(arith, paran):
-    """returns a float division"""
-    return arith/paran
+
 
 def create_key_file(key=generate_random_key(), filename="private.key"):
     """saves or generates a key in a file"""

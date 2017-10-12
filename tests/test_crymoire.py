@@ -12,6 +12,7 @@ class TestCrymoire(unittest.TestCase):
         self.se = occuranceGraph()
         self.crymoire = Crymoire()
         self.crymoire.setKey(generate_random_key(size=1024, chars=string.ascii_letters))
+        #self.crymoire.loadKey("secret.key")
     
 
     def test_enc_and_dec(self):
